@@ -29,11 +29,11 @@ const posts : Reducer<State, Action> = combineReducers({
 // -----------------------------------------------------------------------------
 // EXPORTED SELECTORS
 
-export function getById(state: State, id: number) {
+export function getById(state, id) {
   return FromById.getById(state.byId, id);
 }
 
-export function getAll(state : State) {
+export function getAll(state) {
   return FromAll
     .getAll(state.all)
     .map(id => getById(state, id));

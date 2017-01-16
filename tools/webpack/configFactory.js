@@ -260,7 +260,7 @@ export default function webpackConfigFactory(buildOptions: BuildOptions) {
 
       // We don't want webpack errors to occur during development as it will
       // kill our dev servers.
-      ifDev(() => new webpack.NoErrorsPlugin()),
+      ifDev(() => new webpack.NoEmitOnErrorsPlugin ()),
 
       // We need this plugin to enable hot reloading of our client.
       ifDevClient(() => new webpack.HotModuleReplacementPlugin()),
@@ -269,7 +269,7 @@ export default function webpackConfigFactory(buildOptions: BuildOptions) {
       // configuration to ensure that the output is minimized/optimized.
       ifProdClient(
         () => new webpack.LoaderOptionsPlugin({
-          minimize: config.optimizeProductionBuilds,
+          minimize: config.optimizeProductionBuilds
         }),
       ),
 
@@ -407,6 +407,8 @@ export default function webpackConfigFactory(buildOptions: BuildOptions) {
               // Include sourcemaps for dev experience++.
               query: { sourceMap: true },
             },
+            'postcss-loader',
+            'sass-loader'
           ],
         }),
       ),
@@ -578,7 +580,7 @@ export default function webpackConfigFactory(buildOptions: BuildOptions) {
         ifElse(isClient || isServer)(
           merge(
             {
-              test: /\.css$/,
+              test: /\.(scss|css)$/,
             },
             // For development clients we will defer all our css processing to the
             // happypack plugin named "happypack-devclient-css".
@@ -596,7 +598,7 @@ export default function webpackConfigFactory(buildOptions: BuildOptions) {
             ifProdClient(() => ({
               loader: ExtractTextPlugin.extract({
                 fallbackLoader: 'style-loader',
-                loader: ['css-loader'],
+                loader: ['css-loader!postcss-loader!sass-loader'],
               }),
             })),
             // When targetting the server we use the "/locals" version of the
