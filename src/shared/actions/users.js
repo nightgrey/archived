@@ -4,10 +4,14 @@
 import type { User } from '../types/model';
 import type { Action, ThunkAction } from '../types/redux';
 
-function getSteamId(username: string) : Action {
+export function getSteamId(username: string) : Action {
   return {
     type: 'GET_STEAM_ID',
-    payload: username
+    payload: new Promise((resolve, reject) => {
+      axios.get(`https://jsonplaceholder.typicode.com/users/1`).then(( { data } ) => {
+        resolve(data);
+      });
+    });
   }
 }
 

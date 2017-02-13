@@ -1,6 +1,7 @@
 /* @flow */
 
 import './globals.scss';
+import Compare from './Compare';
 import Error404 from './Error404';
 import Header from './Header';
 import Helmet from 'react-helmet';
@@ -30,6 +31,16 @@ function WhatTheGame() {
           render={routerProps =>
             <CodeSplit chunkName="home" modules={{ Home: require('./Home') }}>
               { ({ Home }) => Home && <Home {...routerProps} /> }
+            </CodeSplit>
+          }
+        />
+
+        <Match
+          exactly
+          pattern="/compare"
+          render={routerProps =>
+            <CodeSplit chunkName="compare" modules={{ Compare: require('./Compare') }}>
+              { ({ Compare }) => Compare && <Compare {...routerProps} /> }
             </CodeSplit>
           }
         />
