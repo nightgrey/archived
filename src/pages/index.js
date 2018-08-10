@@ -2,6 +2,10 @@ import React from 'react'
 import Link from 'gatsby-link'
 import get from 'lodash/get'
 import Helmet from 'react-helmet'
+import styled, { css } from 'react-emotion'
+
+import Main from '../components/Main';
+import Thumbnail from '../components/Thumbnail';
 
 import { rhythm } from '../utils/typography'
 
@@ -11,11 +15,12 @@ class BlogIndex extends React.Component {
     const posts = get(this, 'props.data.allMarkdownRemark.edges')
 
     return (
-      <div>
+      <Main>
         <Helmet title={siteTitle} />
         {posts.map(({ node }) => {
-          console.log(node);
           const title = get(node, 'frontmatter.title') || node.fields.slug
+          const thumbnail = get(node, 'frontmatter.thumbnail.childImageSharp.responsiveSizes', null);
+          
           return (
             <div key={node.fields.slug}>
               <h3
@@ -27,12 +32,14 @@ class BlogIndex extends React.Component {
                   {title}
                 </Link>
               </h3>
+              <Thumbnail image={thumbnail} />
+
               <small>{node.frontmatter.date}</small>
               <p dangerouslySetInnerHTML={{ __html: node.excerpt }} />
             </div>
           )
         })}
-      </div>
+      </Main>
     )
   }
 }
@@ -59,9 +66,12 @@ export const pageQuery = graphql`
             thumbnail {
               childImageSharp {
                 responsiveSizes(maxWidth: 1200) {
+                  base64
+                  aspectRatio
                   src
                   srcSet
                   sizes
+                  originalImg
                 }
               }
             }

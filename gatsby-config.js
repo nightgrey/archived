@@ -25,12 +25,6 @@ module.exports = {
             },
           },
           {
-            resolve: `gatsby-remark-responsive-image`,
-            options: {
-              maxWidth: 2048
-            }
-          },
-          {
             resolve: `gatsby-remark-responsive-iframe`,
             options: {
               wrapperStyle: `margin-bottom: 1.0725rem`,
@@ -52,6 +46,7 @@ module.exports = {
     },
     `gatsby-plugin-feed`,
     `gatsby-plugin-offline`,
+    `gatsby-plugin-emotion`,
     `gatsby-plugin-react-helmet`,
     {
       resolve: 'gatsby-plugin-typography',
