@@ -17,14 +17,14 @@ const typography = new Typography({
   baseFontSize: '16px',
   baseLineHeight: 1.45,
   scaleRatio: 2,
-  headerFontFamily: ['Montserrat', 'sans-serif'],
-  bodyFontFamily: ['Montserrat', 'sans-serif'],
+  headerFontFamily: ['IBM Plex Sans', 'sans-serif'],
+  bodyFontFamily: ['IBM Plex Sans', 'sans-serif'],
   headerColor: '#fff',
   bodyColor: '#fff',
   headerWeight: '700',
   bodyWeight: '400',
   boldWeight: '400',
-  //blockMarginBottom:
+  //blockMarginBotto  m:
   includeNormalize: true,
   overrideStyles: ({ adjustFontSizeTo, rhythm }, options, styles) => {
     

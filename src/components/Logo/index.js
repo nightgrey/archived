@@ -1,17 +1,17 @@
 import React from 'react'
 
-import Image from './nn-3d.svg';
+import Image from './nn-3d--black.svg';
 
 class Logo extends React.Component {
   render() {
-    const { width, height } = this.props;
+    const { width, height, type } = this.props;
 
-    return <img 
+    return <img
         style={{
             display: 'block',
             marginBottom: 0
         }} 
-        src={Image} 
+        src={Image}
         width={width} 
         height={height}
     />

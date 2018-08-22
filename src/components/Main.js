@@ -10,7 +10,6 @@ class Main extends React.Component {
 
     return (
         <div style={{
-            backgroundColor: '#000d2b',
             overflow: 'hidden'
         }}>
             <Container>
