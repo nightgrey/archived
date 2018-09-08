@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Image from './nn-3d--black.svg';
+import Image from './nn-3d--white.svg';
 
 class Logo extends React.Component {
   render() {

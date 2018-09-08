@@ -20,7 +20,7 @@ class BlogIndex extends React.Component {
         {posts.map(({ node }) => {
           const title = get(node, 'frontmatter.title') || node.fields.slug
           const thumbnail = get(node, 'frontmatter.thumbnail.childImageSharp.responsiveSizes', null);
-          
+
           return (
             <div key={node.fields.slug}>
               <h3

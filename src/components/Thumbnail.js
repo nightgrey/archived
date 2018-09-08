@@ -4,6 +4,10 @@ import { css } from 'react-emotion';
 const Thumbnail = (props) => {
   const { image } = props;
 
+  if(!image) {
+    return null;
+  }
+
   return (
       <div css={css`
       position: relative;
