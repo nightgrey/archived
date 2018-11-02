@@ -15,6 +15,9 @@ Route::get('/', function () {
     return view('home');
 });
 
-Auth::routes();
+Route::group(['middleware' => 'auth'], function() {
+    Route::get('/profile', 'UserController@edit')->name('users.edit');
+    Route::patch('/profile', 'UserController@update')->name('users.update');
+});
 
-Route::get('/home', 'HomeController@index')->name('home');
+Auth::routes();

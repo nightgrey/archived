@@ -15,10 +15,12 @@ use App\User;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// User
+Route::get('/users/{user}', 'UserController@show');
 
+Route::group(['middleware' => 'auth:api'], function() {
+    Route::patch('users/update', 'UserController@update');
+});
 // Authentication
 Route::post('auth/register', 'Auth\RegisterController@register');
 Route::post('auth/login', 'Auth\LoginController@login');
