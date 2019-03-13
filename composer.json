@@ -2,8 +2,8 @@
 	"repositories": [
 		{ "type": "composer", "url": "https://composer.typo3.org/" }
 	],
-	"name": "typo3/cms-base-distribution",
-	"description" : "TYPO3 CMS Base Distribution",
+	"name": "typo3-docker",
+	"description" : "Opinionated boilerplate to start your own TYPO3 project with composer, docker + webpack for the frontend.",
 	"license": "GPL-2.0-or-later",
 	"config": {
 		"platform": {
