@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  webserver:
+    build:
+      context: ./docker/apache
+    env_file:
+      - docker/.env
+      - ./docker/dev.env
+  database:
+    build:
+      context: ./docker/database
+    env_file:
+      - docker/.env
+      - ./docker/dev.env
