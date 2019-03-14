@@ -42,7 +42,7 @@ WORKDIR /var/www/
 ADD ./composer.json ./
 COPY ./composer.lock ./
 
-RUN composer install
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
 
 RUN set -x \
 	&& php /var/www/vendor/bin/typo3cms install:setup \
