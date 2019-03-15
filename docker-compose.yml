@@ -6,7 +6,7 @@ services:
       - ./public/typo3conf/AdditionalConfiguration.php:/var/www/public/typo3conf/AdditionalConfiguration.php
       - ./public/typo3conf/AdditionalConfiguration.development.php:/var/www/public/typo3conf/AdditionalConfiguration.development.php
     ports:
-      - 80:80  
+      - 80:80
     build:
       context: ./
       dockerfile: ./docker/apache/Dockerfile

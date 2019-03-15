@@ -1,32 +1,134 @@
-FROM composer AS composer
-FROM php:7-apache
+FROM php:7.2-apache
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Packages
 RUN set -x \
-  && apt-get update \
-  && apt-get install tar rsync curl sed bash python less mysql-client git optipng nano -y
+    && apt-get update \
+    # Install packages
+    && apt-get install \
+        supervisor \
+        wget \
+        curl \
+        vim \
+        net-tools \
+        tzdata -y
 
-# PHP extensions
 RUN set -x \
-  	&& apt-get install libxml2-dev libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev imagemagick zlib1g-dev ssl-cert \
-		&& apt-get clean \
-  	&& docker-php-ext-configure gd \
-  		--with-gd \
-  		--with-freetype-dir=/usr/include/ \
-  		--with-png-dir=/usr/include/ \
-  		--with-jpeg-dir=/usr/include/ \
-  	#&& docker-php-ext-install pcre session xml filter hash mbstring spl standard fileinfo gd zip zlib openssl intl mysqli opcache exif
-    && docker-php-ext-install -j$(nproc) mysqli soap gd zip
+    # Install services
+    && apt-get install \
+        # Install common tools
+        zip \
+        unzip \
+        bzip2 \
+        moreutils \
+        dnsutils \
+        openssh-client \
+        rsync \
+        git \
+        patch -y
 
-# XDebug
-RUN pecl install xdebug \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug-extension.ini
+RUN set -x \
+    # Install php environment
+    && apt-get install \
+        # Install tools
+        imagemagick \
+        graphicsmagick \
+        ghostscript \
+        jpegoptim \
+        libjpeg-turbo-progs \
+        pngcrush \
+        optipng \
+        apngopt \
+        pngnq \
+        pngquant \
+        # Libraries
+        libldap-2.4-2 \
+        libxslt1.1 \
+        zlibc \
+        zlib1g \
+        libpq5 \
+        libpng16-16 \
+        libmcrypt4 \
+        libzip4 \
+        libjpeg62-turbo-dev \
+        libfreetype6-dev \
+        # Dev and headers
+        libbz2-dev \
+        libicu-dev \
+        libldap2-dev \
+        libldb-dev \
+        libmcrypt-dev \
+        libxml2-dev \
+        libxslt1-dev \
+        zlib1g-dev \
+        libmemcached-dev \
+        libpng-dev \
+        libpq-dev \
+        libzip-dev \
+        libc-client-dev \
+        libkrb5-dev -y \
+        # Install guetzli
+        && wget https://github.com/google/guetzli/archive/master.zip \
+        && unzip master.zip \
+        && make -C guetzli-master \
+        && cp guetzli-master/bin/Release/guetzli /usr/local/bin/ \
+        && rm -rf master.zip guetzli-master \
+        # Install extensions
+        && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+        && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+        && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+        && docker-php-ext-install \
+            bcmath \
+            bz2 \
+            calendar \
+            exif \
+            intl \
+            imap \
+            gettext \
+            ldap \
+            mysqli \
+            hash \
+            pcntl \
+            pdo_mysql \
+            pdo_pgsql \
+            pgsql \
+            soap \
+            sockets \
+            tokenizer \
+            sysvmsg \
+            sysvsem \
+            sysvshm \
+            shmop \
+            xmlrpc \
+            xsl \
+            zip \
+            gd \
+            gettext \
+            opcache \
+        # Install extensions for PHP 7.x
+        && pecl install apcu \
+        # Uninstall dev and header packages
+        && apt-get purge -y -f --force-yes \
+            libc-client-dev \
+            libkrb5-dev \
+            libbz2-dev \
+            libicu-dev \
+            libldap2-dev \
+            libldb-dev \
+            libmcrypt-dev \
+            libxml2-dev \
+            libxslt1-dev \
+            zlib1g-dev \
+            libpng-dev \
+            libpq-dev \
+            libzip-dev
 
 # PHP configuration
-RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
-
-# Example: Custom PHP configuration
-# COPY customconfig.ini $PHP_INI_DIR/conf.d/
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY ./docker/apache/src/typo3.ini $PHP_INI_DIR/conf.d/typo3.ini
+# @TODO: Get xdebug to work.
+# COPY ./docker/apache/src/xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
 
 # apache2 configuration
 ADD ./docker/apache/src/vhost.conf /etc/apache2/sites-available/000-default.conf
@@ -36,25 +138,18 @@ RUN set -x \
 		&& curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
 		&& php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --version=1.6.2 && rm -rf /tmp/composer-setup.php
 
-# Install dependencies
+# Install TYPO3
 WORKDIR /var/www/
 
 ADD ./composer.json ./
 COPY ./composer.lock ./
 
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
+RUN composer install
 
-RUN set -x \
-	&& php /var/www/vendor/bin/typo3cms install:setup \
-	--site-name=$TYPO3_SITE_NAME \
-	--database-user-name=$MYSQL_USER \
-	--database-user-password=$MYSQL_PASSWORD \
-	--database-name=$MYSQL_DATABASE \
-	--database-host-name=database \
-	--use-existing-database \
-	--admin-user-name=$TYPO3_USER \
-	--admin-password=12345678 \
-	--web-server-config=apache \
-	--no-interaction
+# TYPO3 setup
+ADD ./docker/apache/src/setup-typo3.sh /tmp/setup-typo3.sh
+RUN chmod +x /tmp/setup-typo3.sh
 
 EXPOSE 80 443
+
+CMD ["sh", "-c", "/tmp/setup-typo3.sh; /usr/local/bin/apache2-foreground"]
