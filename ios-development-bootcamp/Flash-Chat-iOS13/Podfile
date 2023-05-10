@@ -1,0 +1,11 @@
+platform :ios, '13.0'
+
+target 'Mini Chat' do
+  use_frameworks!
+
+  # Pods for Mini Chat
+  pod 'CLTypingLabel'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+  pod 'FirebaseFirestoreSwift'
+end
