@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+nbproject
+
+# PHP: composer, TYPO3
+/var
+/vendor
+/public/*
+!/public/typo3conf
+/public/typo3conf/*
+!/public/typo3conf/LocalConfiguration.php
+!/public/typo3conf/AdditionalConfiguration*.php

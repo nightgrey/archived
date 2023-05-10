@@ -1,0 +1,7 @@
+<?php
+
+$typo3Configuration = [
+
+];
+
+?>

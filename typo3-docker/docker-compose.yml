@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  webserver:
+    volumes: 
+      - ./public/typo3conf/AdditionalConfiguration.php:/var/www/public/typo3conf/AdditionalConfiguration.php
+      - ./public/typo3conf/AdditionalConfiguration.development.php:/var/www/public/typo3conf/AdditionalConfiguration.development.php
+    ports:
+      - 80:80
+    build:
+      context: ./
+      dockerfile: ./docker/apache/Dockerfile
+    env_file:
+      - docker/.env
+    depends_on: 
+      - database
+  database:
+    expose: 
+      - 3306
+    build:
+      context: ./
+      dockerfile: ./docker/database/Dockerfile
+    env_file:
+      - docker/.env
