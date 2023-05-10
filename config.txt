@@ -1,0 +1,8 @@
+git@github.com:nightgrey/scrum-poker.git scrum-poker
+git@github.com:nightgrey/typo3-docker.git typo3-docker
+git@github.com:nightgrey/automation-playground.git terraform
+git@github.com:nightgrey/ios-development-bootcamp.git ios-development-bootcamp
+git@github.com:nightgrey/laravel-playground.git learning-laravel
+git@github.com:nightgrey/blog.git learning-gatsby
+git@github.com:nightgrey/react-learning.git learning-react
+git@github.com:nightgrey/web-boilerplate.git web-boilerplate
